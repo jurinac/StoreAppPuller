@@ -2,7 +2,8 @@ package com.shaz.sap
 
 import android.content.Context
 import android.os.AsyncTask
-import android.support.annotation.NonNull
+import android.util.Log
+import androidx.annotation.NonNull
 import com.shaz.sap.pojo.PackageBean
 import org.jsoup.HttpStatusException
 import org.jsoup.Jsoup
@@ -95,6 +96,13 @@ class Puller private constructor() {
                 elemLocale?.ownText()?.let { bean?.setLocale(it) }
                 elemPublishDate?.ownText()?.let { bean?.setPublishDate(it) }
 
+                val testItems = doc.select("span.htlgb");
+                for( (index, item) in testItems.withIndex()){
+                    if(index == 6){
+                        val version = item.text()
+                        version ?.let {  bean?.setVersion(item.text()) }
+                    }
+                }
             } catch (e: HttpStatusException) {
                 isError = true
                 errorMessage = if (e.statusCode == 404) mAppNotFound else e.message
